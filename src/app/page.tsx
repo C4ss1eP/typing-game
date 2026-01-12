@@ -287,7 +287,6 @@ export default function Home() {
       {/* POPUP MODAL */}
       {showWin && (
         <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm bg-black/30">
-          {/* Confetti from left */}
           {typeof window !== "undefined" && (
             <>
               <Confetti
@@ -297,19 +296,8 @@ export default function Home() {
                 initialVelocityY={10}
                 width={window.innerWidth}
                 height={window.innerHeight}
-                origin={{ x: 0, y: 1 }}
-                angle={120}
               />
-              <Confetti
-                numberOfPieces={150}
-                recycle={false}
-                gravity={0.25}
-                initialVelocityY={10}
-                width={window.innerWidth}
-                height={window.innerHeight}
-                origin={{ x: 1, y: 1 }}
-                angle={60}
-              />
+              {/* You can use a single Confetti component, or duplicate for more effect */}
             </>
           )}
           <div className="bg-black text-white rounded-lg shadow-lg p-8 flex flex-col items-center border-2 border-white">
