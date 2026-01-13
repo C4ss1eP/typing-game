@@ -130,26 +130,6 @@ export default function Home() {
         }}
       >
         <div className="flex flex-col h-full p-6 gap-6">
-          <div className="flex justify-end items-center mb-2">
-            {/* Settings Toggle Button (inside sidebar for closing) */}
-            <button
-              onClick={() => setSettingsOpen(false)}
-              className={`bg-black border-2 border-white rounded-r-lg p-3 shadow-lg hover:bg-gray-900 transition-all flex flex-col items-center
-                fixed left-0`}
-              style={{
-                top: "calc(10px + 2rem)",
-                transform: settingsOpen ? `translateX(${SIDEBAR_WIDTH}px)` : "none",
-                zIndex: 60,
-              }}
-              aria-label="Close Settings"
-            >
-              <svg width="24" height="24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 8v4l3 3" />
-              </svg>
-              <span className="mt-2 text-white font-mono text-xs">Settings</span>
-            </button>
-          </div>
           <button
             onClick={handleReset}
             className="bg-red-600 text-white px-4 py-2 rounded shadow hover:bg-red-700 transition-all font-mono"
@@ -216,25 +196,23 @@ export default function Home() {
           </div>
         </div>
       </div>
-      {/* Settings Toggle Button */}
-      {!settingsOpen && (
-        <button
-          onClick={() => setSettingsOpen(true)}
-          className="fixed left-0 z-50 bg-black border-2 border-white rounded-r-lg p-3 shadow-lg hover:bg-gray-900 transition-all flex flex-col items-center"
-          style={{
-            top: "calc(10px + 2rem)",
-            transitionDuration: `${slideDuration}ms`,
-            transform: !settingsOpen ? "translateX(0)" : `translateX(${SIDEBAR_WIDTH}px)`,
-          }}
-          aria-label="Open Settings"
-        >
-          <svg width="24" height="24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10" />
-            <path d="M12 8v4l3 3" />
-          </svg>
-          <span className="mt-2 text-white font-mono text-xs">Settings</span>
-        </button>
-      )}
+      {/* Settings Toggle Button (OUTSIDE sidebar) */}
+      <button
+        onClick={() => setSettingsOpen(!settingsOpen)}
+        className="fixed left-0 z-50 bg-black border-2 border-white rounded-r-lg p-3 shadow-lg hover:bg-gray-900 transition-all flex flex-col items-center"
+        style={{
+          top: "calc(10px + 2rem)",
+          transitionDuration: `${slideDuration}ms`,
+          transform: settingsOpen ? `translateX(${SIDEBAR_WIDTH}px)` : "translateX(0)",
+        }}
+        aria-label="Toggle Settings"
+      >
+        <svg width="24" height="24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 8v4l3 3" />
+        </svg>
+        <span className="mt-2 text-white font-mono text-xs">Settings</span>
+      </button>
       {/* Main Content */}
       <div
         className="flex flex-col items-center justify-center w-full transition-all"
@@ -248,7 +226,7 @@ export default function Home() {
             fontFamily: "'Press Start 2P', 'VT323', 'Fira Mono', monospace",
             imageRendering: "pixelated",
           }}>
-          Typing Live Printing
+          Cassie&apos;s Typing Game
         </h1>
         <div className="w-[80%] h-[60vh] m-[10px] bg-black text-white border-2 border-red-600 rounded px-4 py-6 text-lg tracking-widest select-none font-mono shadow-[4px_4px_0_0_#ff0000]"
           style={{ letterSpacing: "2px" }}>
@@ -297,7 +275,6 @@ export default function Home() {
                 width={window.innerWidth}
                 height={window.innerHeight}
               />
-              {/* You can use a single Confetti component, or duplicate for more effect */}
             </>
           )}
           <div className="bg-black text-white rounded-lg shadow-lg p-8 flex flex-col items-center border-2 border-white">
