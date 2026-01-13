@@ -1,6 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Confetti from "react-confetti";
+import MainMenu from "./MainMenu";
+
 
 // Simple random word generator
 const WORDS = [
@@ -14,6 +16,10 @@ function getRandomWords(count: number) {
 }
 
 export default function Home() {
+
+  // Add a screen state
+  const [screen, setScreen] = useState<"menu" | "game" | "settings" | "quit">("menu");
+
   // Settings state
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [wordCount, setWordCount] = useState(5);
@@ -118,101 +124,123 @@ export default function Home() {
     });
   };
 
-  return (
-    <main className="min-h-screen flex flex-row items-center justify-center bg-black relative overflow-x-hidden">
-      {/* Settings Sidebar */}
-      <div
-        className={`fixed top-0 left-0 h-full z-50 bg-black border-r-2 border-white shadow-lg transition-transform ease-in-out`}
-        style={{
-          width: SIDEBAR_WIDTH,
-          transitionDuration: `${slideDuration}ms`,
-          transform: settingsOpen ? "translateX(0)" : "translateX(-100%)",
-        }}
-      >
-        <div className="flex flex-col h-full p-6 gap-6">
+  // Settings Sidebar
+  const SettingsSidebar = (
+    <div
+      className={`fixed top-0 left-0 h-full z-50 bg-black border-r-2 border-white shadow-lg transition-transform ease-in-out`}
+      style={{
+        width: SIDEBAR_WIDTH,
+        transitionDuration: `${slideDuration}ms`,
+        transform: "translateX(0)"
+      }}
+    >
+      <div className="flex flex-col h-full p-6 gap-6">
+        {/* Back to Menu Button */}
+        <div>
           <button
-            onClick={handleReset}
-            className="bg-red-600 text-white px-4 py-2 rounded shadow hover:bg-red-700 transition-all font-mono"
+            onClick={() => setScreen("menu")}
+            className="bg-gray-800 text-white px-4 py-2 rounded shadow font-mono mb-2 hover:bg-gray-700 transition-all"
           >
-            Reset Words
+            Back to Menu
           </button>
-          <div>
-            <label className="block text-white mb-1 font-mono">Word Count</label>
-            <input
-              type="number"
-              min={1}
-              max={WORDS.length}
-              value={wordCount}
-              onChange={e => setWordCount(Number(e.target.value))}
-              className="w-full px-2 py-1 rounded bg-gray-800 text-white border border-gray-600 font-mono"
-            />
-          </div>
-          <div>
-            <label className="block text-white mb-1 font-mono">Highlight Color</label>
-            <input
-              type="color"
-              value={highlightColor}
-              onChange={e => setHighlightColor(e.target.value)}
-              className="w-10 h-10 p-0 border-none bg-transparent"
-            />
-          </div>
-          <div>
-            <label className="block text-white mb-1 font-mono">Right Letter Color</label>
-            <input
-              type="color"
-              value={rightColor}
-              onChange={e => setRightColor(e.target.value)}
-              className="w-10 h-10 p-0 border-none bg-transparent"
-            />
-          </div>
-          <div>
-            <label className="block text-white mb-1 font-mono">Completed Word Color</label>
-            <input
-              type="color"
-              value={completedWordColor}
-              onChange={e => setCompletedWordColor(e.target.value)}
-              className="w-10 h-10 p-0 border-none bg-transparent"
-            />
-          </div>
-          <div>
-            <label className="block text-white mb-1 font-mono">Wrong Letter Color</label>
-            <input
-              type="color"
-              value={wrongColor}
-              onChange={e => setWrongColor(e.target.value)}
-              className="w-10 h-10 p-0 border-none bg-transparent"
-            />
-          </div>
-          <div>
-            <label className="block text-white mb-1 font-mono">Slide Duration (ms)</label>
-            <input
-              type="number"
-              min={100}
-              max={3000}
-              value={slideDuration}
-              onChange={e => setSlideDuration(Number(e.target.value))}
-              className="w-full px-2 py-1 rounded bg-gray-800 text-white border border-gray-600 font-mono"
-            />
-          </div>
+        </div>
+        {/* Word Count */}
+        <div>
+          <label className="block text-white mb-1 font-mono">Word Count</label>
+          <input
+            type="number"
+            min={1}
+            max={WORDS.length}
+            value={wordCount}
+            onChange={e => setWordCount(Number(e.target.value))}
+            className="w-full px-2 py-1 rounded bg-gray-800 text-white border border-gray-600 font-mono"
+          />
+        </div>
+        {/* Highlight Color */}
+        <div>
+          <label className="block text-white mb-1 font-mono">Highlight Color</label>
+          <input
+            type="color"
+            value={highlightColor}
+            onChange={e => setHighlightColor(e.target.value)}
+            className="w-10 h-10 p-0 border-none bg-transparent"
+          />
+        </div>
+        {/* Right Letter Color */}
+        <div>
+          <label className="block text-white mb-1 font-mono">Right Letter Color</label>
+          <input
+            type="color"
+            value={rightColor}
+            onChange={e => setRightColor(e.target.value)}
+            className="w-10 h-10 p-0 border-none bg-transparent"
+          />
+        </div>
+        {/* Completed Word Color */}
+        <div>
+          <label className="block text-white mb-1 font-mono">Completed Word Color</label>
+          <input
+            type="color"
+            value={completedWordColor}
+            onChange={e => setCompletedWordColor(e.target.value)}
+            className="w-10 h-10 p-0 border-none bg-transparent"
+          />
+        </div>
+        {/* Wrong Letter Color */}
+        <div>
+          <label className="block text-white mb-1 font-mono">Wrong Letter Color</label>
+          <input
+            type="color"
+            value={wrongColor}
+            onChange={e => setWrongColor(e.target.value)}
+            className="w-10 h-10 p-0 border-none bg-transparent"
+          />
+        </div>
+        {/* Slide Duration */}
+        <div>
+          <label className="block text-white mb-1 font-mono">Slide Duration (ms)</label>
+          <input
+            type="number"
+            min={100}
+            max={3000}
+            value={slideDuration}
+            onChange={e => setSlideDuration(Number(e.target.value))}
+            className="w-full px-2 py-1 rounded bg-gray-800 text-white border border-gray-600 font-mono"
+          />
         </div>
       </div>
-      {/* Settings Toggle Button (OUTSIDE sidebar) */}
-      <button
-        onClick={() => setSettingsOpen(!settingsOpen)}
-        className="fixed left-0 z-50 bg-black border-2 border-white rounded-r-lg p-3 shadow-lg hover:bg-gray-900 transition-all flex flex-col items-center"
-        style={{
-          top: "calc(10px + 2rem)",
-          transitionDuration: `${slideDuration}ms`,
-          transform: settingsOpen ? `translateX(${SIDEBAR_WIDTH}px)` : "translateX(0)",
-        }}
-        aria-label="Toggle Settings"
-      >
-        <svg width="24" height="24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="10" />
-          <path d="M12 8v4l3 3" />
-        </svg>
-        <span className="mt-2 text-white font-mono text-xs">Settings</span>
-      </button>
+    </div>
+  );
+
+  // --- MAIN RENDER LOGIC ---
+  if (screen === "menu") {
+    return (
+      <MainMenu
+        onPlay={() => setScreen("game")}
+        onSettings={() => setScreen("settings")}
+        onQuit={() => setScreen("quit")}
+      />
+    );
+  }
+
+  // --- Settings Screen ---
+  if (screen === "settings") {
+    return SettingsSidebar;
+  }
+
+  // --- Quit Screen ---
+  if (screen === "quit") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black text-white font-mono text-2xl">
+        Thanks for playing!
+      </div>
+    );
+  }
+
+  // --- GAME SCREEN ---
+
+  return (
+    <main className="min-h-screen flex flex-row items-center justify-center bg-black relative overflow-x-hidden">
       {/* Main Content */}
       <div
         className="flex flex-col items-center justify-center w-full transition-all"
@@ -221,6 +249,20 @@ export default function Home() {
           transitionDuration: `${slideDuration}ms`,
         }}
       >
+        <div className="flex flex-row justify-center gap-x-8 mb-6">
+          <button
+            onClick={handleReset}
+            className="bg-red-600 text-white px-4 py-2 rounded shadow hover:bg-red-700 transition-all font-mono"
+          >
+            Reset Words
+          </button>
+          <button
+            onClick={() => setScreen("menu")}
+            className="bg-gray-800 text-white px-4 py-2 rounded shadow font-mono"
+          >
+            Back to Menu
+          </button>
+        </div>
         <h1 className="m-[10px] flex flex-col items-center border-4 border-white rounded-lg shadow-[8px_8px_0_0_#ff0000] bg-black p-8 max-w-xl w-full"
           style={{
             fontFamily: "'Press Start 2P', 'VT323', 'Fira Mono', monospace",
