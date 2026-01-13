@@ -27,10 +27,6 @@ export default function Home() {
   const [wrongColor, setWrongColor] = useState("#f87171"); // red-400
   const [completedWordColor, setCompletedWordColor] = useState("#22c55e"); // green-500 (for completed word)
 
-  // Sidebar width and duration (keep in sync with sidebar style)
-  const SIDEBAR_WIDTH = 320;
-  const [slideDuration, setSlideDuration] = useState(700); // duration in ms
-
   // Game state
   const [words, setWords] = useState<string[]>([]);
   const [currentWordIdx, setCurrentWordIdx] = useState(0);
@@ -125,14 +121,7 @@ export default function Home() {
 
   // Settings Sidebar
   const SettingsSidebar = (
-    <div
-      className={`fixed top-0 left-0 h-full z-50 bg-black border-r-2 border-white shadow-lg transition-transform ease-in-out`}
-      style={{
-        width: SIDEBAR_WIDTH,
-        transitionDuration: `${slideDuration}ms`,
-        transform: "translateX(0)"
-      }}
-    >
+    <div className={`fixed top-0 left-0 h-full z-50 bg-black border-r-2 border-white shadow-lg transition-transform ease-in-out`}>
       <div className="flex flex-col h-full p-6 gap-6">
         {/* Back to Menu Button */}
         <div>
@@ -231,10 +220,6 @@ export default function Home() {
       {/* Main Content */}
       <div
         className="flex flex-col items-center justify-center w-full transition-all"
-        style={{
-          marginLeft: settingsOpen ? SIDEBAR_WIDTH : 0,
-          transitionDuration: `${slideDuration}ms`,
-        }}
       >
         <div className="flex flex-row justify-center gap-x-8 mb-6">
           <button
