@@ -21,7 +21,6 @@ export default function Home() {
   const [screen, setScreen] = useState<"menu" | "game" | "settings" | "quit">("menu");
 
   // Settings state
-  const [settingsOpen, setSettingsOpen] = useState(false);
   const [wordCount, setWordCount] = useState(5);
   const [highlightColor, setHighlightColor] = useState("#ffffff"); // yellow-400
   const [rightColor, setRightColor] = useState("#fde047"); // yellow-400 (for correct letters as you type)
@@ -194,18 +193,6 @@ export default function Home() {
             value={wrongColor}
             onChange={e => setWrongColor(e.target.value)}
             className="w-10 h-10 p-0 border-none bg-transparent"
-          />
-        </div>
-        {/* Slide Duration */}
-        <div>
-          <label className="block text-white mb-1 font-mono">Slide Duration (ms)</label>
-          <input
-            type="number"
-            min={100}
-            max={3000}
-            value={slideDuration}
-            onChange={e => setSlideDuration(Number(e.target.value))}
-            className="w-full px-2 py-1 rounded bg-gray-800 text-white border border-gray-600 font-mono"
           />
         </div>
       </div>
