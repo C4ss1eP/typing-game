@@ -7,7 +7,7 @@ import { WordDisplay } from "@/components/word-display";
 import { SettingsSidebar } from "@/components/settings-sidebar";
 import MainMenu from "@/components/MainMenu";
 import { useWordGame } from "@/hooks/use-word-game";
-import { Difficulty, DIFFICULTY_WORDS } from "@/lib/words";
+import { Difficulty } from "@/lib/words";
 
 export default function Home() {
   const [screen, setScreen] = useState<"menu" | "settings" | "game" | "quit">("menu");

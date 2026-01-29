@@ -1,5 +1,5 @@
 // components/word-display.tsx
-import React, { useRef } from "react";
+import React from "react";
 
 interface WordDisplayProps {
   words: string[];

@@ -66,7 +66,7 @@ export function useWordGame({ wordCount, difficulty }: UseWordGameProps) {
     if (!initialTransformSet) {
       setInitialTransformSet(true);
     }
-  }, [currentWordIdx, words, initialTransformSet]);
+  }, [currentWordIdx, words, initialTransformSet, isInitialRender]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
