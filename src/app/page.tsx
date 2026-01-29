@@ -1,194 +1,43 @@
+// M:\typing-game\src\app\page.tsx
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import Image from "next/image";
 import Confetti from "react-confetti";
-import MainMenu from "./MainMenu";
-
-
-// Simple random word generator
-const WORDS = [
-  "pixel", "react", "game", "code", "type", "speed", "input", "output", "logic", "state",
-  "array", "props", "style", "focus", "event", "random", "track", "color", "green", "yellow"
-];
-
-function getRandomWords(count: number) {
-  const shuffled = [...WORDS].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, count);
-}
+import { WordDisplay } from "@/components/word-display";
+import { SettingsSidebar } from "@/components/settings-sidebar";
+import MainMenu from "@/components/MainMenu";
+import { useWordGame } from "@/hooks/use-word-game";
+import { Difficulty, DIFFICULTY_WORDS } from "@/lib/words";
 
 export default function Home() {
-
-  // Add a screen state
-  const [screen, setScreen] = useState<"menu" | "game" | "settings" | "quit">("menu");
+  const [screen, setScreen] = useState<"menu" | "settings" | "game" | "quit">("menu");
 
   // Settings state
   const [wordCount, setWordCount] = useState(5);
-  const [highlightColor, setHighlightColor] = useState("#ffffff"); // yellow-400
-  const [rightColor, setRightColor] = useState("#fde047"); // yellow-400 (for correct letters as you type)
-  const [wrongColor, setWrongColor] = useState("#f87171"); // red-400
-  const [completedWordColor, setCompletedWordColor] = useState("#22c55e"); // green-500 (for completed word)
+  const [highlightColor, setHighlightColor] = useState("#ffffff");
+  const [rightColor, setRightColor] = useState("#fde047");
+  const [wrongColor, setWrongColor] = useState("#f87171");
+  const [completedWordColor, setCompletedWordColor] = useState("#22c55e");
+  const [difficulty, setDifficulty] = useState<Difficulty>("Easy");
+  const [slideDuration, setSlideDuration] = useState(500);
 
-  // Game state
-  const [words, setWords] = useState<string[]>([]);
-  const [currentWordIdx, setCurrentWordIdx] = useState(0);
-  const [input, setInput] = useState("");
-  const [showWin, setShowWin] = useState(false);
+  // Use the custom hook for game logic
+  const {
+    words,
+    currentWordIdx,
+    input,
+    showWin,
+    gameComplete,
+    translateY,
+    isInitialRender,
+    initialTransformSet,
+    wordRefs,
+    wordDisplayViewportRef,
+    handleInputChange,
+    resetGame,
+  } = useWordGame({ wordCount, difficulty });
 
-  // Generate words on mount or when wordCount changes
-  useEffect(() => {
-    setWords(getRandomWords(wordCount));
-    setCurrentWordIdx(0);
-    setInput("");
-    setShowWin(false);
-  }, [wordCount]);
-
-  // Reset handler
-  const handleReset = () => {
-    setWords(getRandomWords(wordCount));
-    setCurrentWordIdx(0);
-    setInput("");
-    setShowWin(false);
-  };
-
-  const currentWord = words[currentWordIdx] || "";
-
-  // Handle input change
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setInput(value);
-
-    // If word completed
-    if (value === currentWord) {
-      setTimeout(() => {
-        if (currentWordIdx + 1 >= words.length) {
-          setShowWin(true); // Show popup if last word
-        } else {
-          setCurrentWordIdx(idx => idx + 1);
-        }
-        setInput("");
-      }, 300); // Small delay to show green highlight
-    }
-  };
-
-  // Render words with highlighting
-  const renderWords = () => {
-    return words.map((word, idx) => {
-      // Current word: highlight letters
-      if (idx === currentWordIdx) {
-        // If the word is completed, make all letters green
-        if (input === word) {
-          return (
-            <span key={idx} className="mr-4">
-              <span className="text-green-400">
-                {word.split("").map((char, i) => (
-                  <span key={i}>{char}</span>
-                ))}
-              </span>
-            </span>
-          );
-        }
-        // Otherwise, highlight correct letters, wrong, rest
-        return (
-          <span key={idx} className="mr-4">
-            {word.split("").map((char, i) => {
-              let color = highlightColor;
-              if (input[i] === char) color = rightColor;
-              else if (input[i] && input[i] !== char) color = wrongColor;
-              return (
-                <span key={i} style={{ color }}>
-                  {char}
-                </span>
-              );
-            })}
-          </span>
-        );
-      }
-      // Completed words: green
-      if (idx < currentWordIdx) {
-        return (
-          <span key={idx} className="mr-4" style={{ color: completedWordColor }}>
-            {word}
-          </span>
-        );
-      }
-      // Upcoming words: gray
-      return (
-        <span key={idx} className="mr-4 text-gray-500">
-          {word}
-        </span>
-      );
-    });
-  };
-
-  // Settings Sidebar
-  const SettingsSidebar = (
-    <div className={`fixed top-0 left-0 h-full z-50 bg-black border-r-2 border-white shadow-lg transition-transform ease-in-out`}>
-      <div className="flex flex-col h-full p-6 gap-6">
-        {/* Back to Menu Button */}
-        <div>
-          <button
-            onClick={() => setScreen("menu")}
-            className="bg-gray-800 text-white px-4 py-2 rounded shadow font-mono mb-2 hover:bg-gray-700 transition-all"
-          >
-            Back to Menu
-          </button>
-        </div>
-        {/* Word Count */}
-        <div>
-          <label className="block text-white mb-1 font-mono">Word Count</label>
-          <input
-            type="number"
-            min={1}
-            max={WORDS.length}
-            value={wordCount}
-            onChange={e => setWordCount(Number(e.target.value))}
-            className="w-full px-2 py-1 rounded bg-gray-800 text-white border border-gray-600 font-mono"
-          />
-        </div>
-        {/* Highlight Color */}
-        <div>
-          <label className="block text-white mb-1 font-mono">Highlight Color</label>
-          <input
-            type="color"
-            value={highlightColor}
-            onChange={e => setHighlightColor(e.target.value)}
-            className="w-10 h-10 p-0 border-none bg-transparent"
-          />
-        </div>
-        {/* Right Letter Color */}
-        <div>
-          <label className="block text-white mb-1 font-mono">Right Letter Color</label>
-          <input
-            type="color"
-            value={rightColor}
-            onChange={e => setRightColor(e.target.value)}
-            className="w-10 h-10 p-0 border-none bg-transparent"
-          />
-        </div>
-        {/* Completed Word Color */}
-        <div>
-          <label className="block text-white mb-1 font-mono">Completed Word Color</label>
-          <input
-            type="color"
-            value={completedWordColor}
-            onChange={e => setCompletedWordColor(e.target.value)}
-            className="w-10 h-10 p-0 border-none bg-transparent"
-          />
-        </div>
-        {/* Wrong Letter Color */}
-        <div>
-          <label className="block text-white mb-1 font-mono">Wrong Letter Color</label>
-          <input
-            type="color"
-            value={wrongColor}
-            onChange={e => setWrongColor(e.target.value)}
-            className="w-10 h-10 p-0 border-none bg-transparent"
-          />
-        </div>
-      </div>
-    </div>
-  );
-
-  // --- MAIN RENDER LOGIC ---
+  // Main Render Logic
   if (screen === "menu") {
     return (
       <MainMenu
@@ -199,12 +48,28 @@ export default function Home() {
     );
   }
 
-  // --- Settings Screen ---
   if (screen === "settings") {
-    return SettingsSidebar;
+    return (
+      <SettingsSidebar
+        setScreen={setScreen}
+        wordCount={wordCount}
+        setWordCount={setWordCount}
+        difficulty={difficulty}
+        setDifficulty={setDifficulty}
+        highlightColor={highlightColor}
+        setHighlightColor={setHighlightColor}
+        rightColor={rightColor}
+        setRightColor={setRightColor}
+        wrongColor={wrongColor}
+        setWrongColor={setWrongColor}
+        completedWordColor={completedWordColor}
+        setCompletedWordColor={setCompletedWordColor}
+        slideDuration={slideDuration}
+        setSlideDuration={setSlideDuration}
+      />
+    );
   }
 
-  // --- Quit Screen ---
   if (screen === "quit") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-black text-white font-mono text-2xl">
@@ -213,17 +78,13 @@ export default function Home() {
     );
   }
 
-  // --- GAME SCREEN ---
-
+  // Game Screen
   return (
     <main className="min-h-screen flex flex-row items-center justify-center bg-black relative overflow-x-hidden">
-      {/* Main Content */}
-      <div
-        className="flex flex-col items-center justify-center w-full transition-all"
-      >
+      <div className="flex flex-col items-center justify-center w-full transition-all">
         <div className="flex flex-row justify-center gap-x-8 mb-6">
           <button
-            onClick={handleReset}
+            onClick={resetGame}
             className="bg-red-600 text-white px-4 py-2 rounded shadow hover:bg-red-700 transition-all font-mono"
           >
             Reset Words
@@ -235,26 +96,65 @@ export default function Home() {
             Back to Menu
           </button>
         </div>
-        <h1 className="m-[10px] flex flex-col items-center border-4 border-white rounded-lg shadow-[8px_8px_0_0_#ff0000] bg-black p-8 max-w-xl w-full"
-          style={{
-            fontFamily: "'Press Start 2P', 'VT323', 'Fira Mono', monospace",
-            imageRendering: "pixelated",
-          }}>
-          Cassie&apos;s Typing Game
-        </h1>
-        <div className="w-[80%] h-[60vh] m-[10px] bg-black text-white border-2 border-red-600 rounded px-4 py-6 text-lg tracking-widest select-none font-mono shadow-[4px_4px_0_0_#ff0000]"
-          style={{ letterSpacing: "2px" }}>
-          {renderWords()}
+        
+        {/* Ghost representation */}
+        <div className="w-[40%] aspect-[16/9] relative mb-6 shadow-[4px_4px_0_0_#000000]">
+          <Image 
+            src="/media/ghost_01.png" 
+            alt="Ghost character" 
+            fill
+            style={{ objectFit: 'contain' }}
+            className="p-4"
+          />
+        </div>
+
+        {/* Progress Bar */}
+        <div className="w-[40%] relative">
+          <div className="w-full h-10 border-4 border-white bg-red-600 relative">
+            <div 
+              className={`h-full bg-black transition-all duration-300 absolute right-0 top-0 ${
+                gameComplete ? 'animate-pulse' : ''
+              }`}
+              style={{ 
+                width: `${Math.min(100, (currentWordIdx * Math.floor(100 / words.length)))}%` 
+              }}
+            ></div>
+            <div className="absolute inset-0 flex items-center justify-center text-white font-mono font-bold">
+              {currentWordIdx}/{words.length}
+            </div>
+          </div>
+        </div>
+
+        {/* Viewport for the words */}
+        <div
+          ref={wordDisplayViewportRef}
+          className="w-[40%] aspect-[16/9] m-[10px] bg-black text-white border-2 border-red-600 rounded p-0 overflow-hidden shadow-[4px_4px_0_0_#ff0000] relative"
+        >
+        <WordDisplay
+          words={words}
+          currentWordIdx={currentWordIdx}
+          input={input}
+          highlightColor={highlightColor}
+          rightColor={rightColor}
+          wrongColor={wrongColor}
+          completedWordColor={completedWordColor}
+          translateY={translateY}
+          isInitialRender={isInitialRender}
+          initialTransformSet={initialTransformSet}
+          wordRefs={wordRefs}
+          slideDuration={slideDuration}
+        />
         </div>
         <input
           type="text"
           value={input}
           onChange={handleInputChange}
-          className="
-            w-[80%]
+          disabled={gameComplete} // Disable the input when game is complete
+          className={`
+            w-[40%]
             m-[10px]
             bg-black text-white
-            border-2 border-red-600 rounded
+            border-2 ${gameComplete ? 'border-green-600' : 'border-red-600'} rounded
             px-4 py-3
             text-lg
             tracking-widest
@@ -265,8 +165,9 @@ export default function Home() {
             focus:border-white
             focus:shadow-[2px_2px_0_0_#fff]
             transition-all
-          "
-          placeholder="Type here..."
+            ${gameComplete ? 'cursor-not-allowed' : ''}
+          `}
+          placeholder={gameComplete ? "Game Complete!" : "Type here..."}
           style={{
             fontFamily: "'Press Start 2P', 'VT323', 'Fira Mono', monospace",
             letterSpacing: "2px",
@@ -276,7 +177,8 @@ export default function Home() {
           autoComplete="off"
         />
       </div>
-      {/* POPUP MODAL */}
+      
+      {/* Win Popup Modal */}
       {showWin && (
         <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm bg-black/30">
           {typeof window !== "undefined" && (
@@ -294,7 +196,7 @@ export default function Home() {
           <div className="bg-black text-white rounded-lg shadow-lg p-8 flex flex-col items-center border-2 border-white">
             <h2 className="text-3xl font-bold mb-4">You Won!</h2>
             <button
-              onClick={handleReset}
+              onClick={resetGame}
               className="bg-red-600 text-white px-6 py-2 rounded shadow hover:bg-red-700 transition-all font-mono"
             >
               Play Again
