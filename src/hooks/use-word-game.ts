@@ -90,7 +90,7 @@ export function useWordGame({ wordCount, difficulty }: UseWordGameProps) {
     // Convert input to lowercase and remove spaces
     // .toLowerCase() ensures all characters are lowercase.
     // .replace(/\s/g, '') removes all whitespace characters.
-    let value = e.target.value.toLowerCase().replace(/\s/g, '');
+    const value = e.target.value.toLowerCase().replace(/\s/g, '');
     
     setInput(value);
 
