@@ -1,4 +1,3 @@
-// M:\typing-game\src\app\page.tsx
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
@@ -34,6 +33,7 @@ export default function Home() {
     wordRefs,
     wordDisplayViewportRef,
     handleInputChange,
+    handleKeyDown,
     resetGame,
   } = useWordGame({ wordCount, difficulty });
 
@@ -72,7 +72,7 @@ export default function Home() {
 
   if (screen === "quit") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black text-white font-mono text-2xl">
+      <div className="h-screen w-screen flex items-center justify-center bg-black text-white font-mono text-2xl">
         Thanks for playing!
       </div>
     );
@@ -80,8 +80,8 @@ export default function Home() {
 
   // Game Screen
   return (
-    <main className="min-h-screen flex flex-row items-center justify-center bg-black relative overflow-x-hidden">
-      <div className="flex flex-col items-center justify-center w-full transition-all">
+    <main className="h-screen w-screen flex flex-col items-center justify-start pt-8 bg-black relative overflow-x-hidden">
+      <div className="flex flex-col items-center w-full h-full transition-all overflow-y-auto">
         <div className="flex flex-row justify-center gap-x-8 mb-6">
           <button
             onClick={resetGame}
@@ -98,7 +98,7 @@ export default function Home() {
         </div>
         
         {/* Ghost representation */}
-        <div className="w-[40%] aspect-[16/9] relative mb-6 shadow-[4px_4px_0_0_#000000]">
+        <div className="w-[30%] aspect-[16/9] relative mb-6 shadow-[4px_4px_0_0_#000000]">
           <Image 
             src="/media/ghost_01.png" 
             alt="Ghost character" 
@@ -116,11 +116,24 @@ export default function Home() {
                 gameComplete ? 'animate-pulse' : ''
               }`}
               style={{ 
-                width: `${Math.min(100, (currentWordIdx * Math.floor(100 / words.length)))}%` 
+                width: `${gameComplete ? 100 : Math.min(100, (currentWordIdx * Math.floor(100 / words.length)))}%` 
               }}
             ></div>
             <div className="absolute inset-0 flex items-center justify-center text-white font-mono font-bold">
-              {currentWordIdx}/{words.length}
+              {(() => {
+                const totalHealth = 100;
+                // Calculate how much health each word represents. Avoid division by zero.
+                const healthPerWord = words.length > 0 ? totalHealth / words.length : 0;
+                // Determine the index to use for health calculation.
+                // If the game is complete, we effectively treat currentWordIdx as words.length
+                // to ensure the health displays as zero.
+                const effectiveWordIdx = gameComplete ? words.length : currentWordIdx;
+
+                // Calculate current health based on effectiveWordIdx.
+                const currentHealth = Math.max(0, totalHealth - (effectiveWordIdx * healthPerWord));
+                // Display the rounded current health out of the total health.
+                return `${Math.round(currentHealth)}/${totalHealth}`;
+              })()}
             </div>
           </div>
         </div>
@@ -149,6 +162,7 @@ export default function Home() {
           type="text"
           value={input}
           onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
           disabled={gameComplete} // Disable the input when game is complete
           className={`
             w-[40%]

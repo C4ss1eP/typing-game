@@ -19,7 +19,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// Then update the body class to include this font
 <body className={`${geistSans.variable} ${geistMono.variable} ${pressStart2P.variable} antialiased`}></body>
 
 export const metadata: Metadata = {

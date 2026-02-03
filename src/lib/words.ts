@@ -1,5 +1,3 @@
-// lib/words.ts
-// Word list structured by difficulty levels
 export const DIFFICULTY_WORDS = {
   Easy: [
     "cat", "dog", "run", "jump", "ball", "hat", "sun", "moon", "star", "tree",

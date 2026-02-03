@@ -1,4 +1,3 @@
-// hooks/use-word-game.ts
 import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { getRandomWords, Difficulty } from "@/lib/words";
 
@@ -68,12 +67,31 @@ export function useWordGame({ wordCount, difficulty }: UseWordGameProps) {
     }
   }, [currentWordIdx, words, initialTransformSet, isInitialRender]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  /**
+  * Handles keydown events for the input field to enforce restrictions.
+  * Prevents 'Tab', 'Space', and 'Enter' keys from affecting the input or game state.
+  */
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (gameComplete) {
+      e.preventDefault(); // Prevent any key input if game is complete
+      return;
+    }
+    // Prevent tab, space, and enter from entering the input field
+    if (e.key === 'Tab' || e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+    }
+  };
 
+  // Handles input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Dont allow input if game is complete
     if (gameComplete) return;
 
-    const value = e.target.value;
+    // Convert input to lowercase and remove spaces
+    // .toLowerCase() ensures all characters are lowercase.
+    // .replace(/\s/g, '') removes all whitespace characters.
+    let value = e.target.value.toLowerCase().replace(/\s/g, '');
+    
     setInput(value);
 
     const currentWord = words[currentWordIdx] || "";
@@ -119,6 +137,7 @@ export function useWordGame({ wordCount, difficulty }: UseWordGameProps) {
     wordRefs,
     wordDisplayViewportRef,
     handleInputChange,
+    handleKeyDown,
     resetGame,
   };
 }

@@ -1,4 +1,3 @@
-// M:\typing-game\src\components\word-display.tsx
 import React from "react";
 
 interface WordDisplayProps {
@@ -8,7 +7,7 @@ interface WordDisplayProps {
   highlightColor: string;
   rightColor: string;
   wrongColor: string;
-  completedWordColor: string; // The prop is defined here
+  completedWordColor: string;
   translateY: number;
   isInitialRender: boolean;
   initialTransformSet: boolean;
@@ -23,14 +22,14 @@ export const WordDisplay: React.FC<WordDisplayProps> = ({
   highlightColor,
   rightColor,
   wrongColor,
-  completedWordColor, // And destructured here
+  completedWordColor,
   translateY,
   isInitialRender,
   initialTransformSet,
   wordRefs,
   slideDuration,
 }) => {
-  // Modify transformStyle in WordDisplay component
+  
   const transformStyle = initialTransformSet
     ? `translateY(${translateY}px)`
     : `translateY(25%)`; // Start in middle of viewport rather than top
@@ -47,8 +46,8 @@ export const WordDisplay: React.FC<WordDisplayProps> = ({
       {words.map((word, index) => {
         let fontSizeClass = "";
         let opacityClass = "";
-        let dynamicColorStyle: React.CSSProperties = {}; // For inline style (e.g., hex colors)
-        let tailwindTextColorClass = ""; // For Tailwind classes (e.g., "text-gray-500")
+        let dynamicColorStyle: React.CSSProperties = {};
+        let tailwindTextColorClass = "";
 
         const customStyle: React.CSSProperties = {
           marginBottom: '30px'
@@ -56,12 +55,10 @@ export const WordDisplay: React.FC<WordDisplayProps> = ({
 
         if (index < currentWordIdx) { // All previously completed words
           fontSizeClass = "text-7xl";
-          dynamicColorStyle = { color: completedWordColor }; // <--- Use completedWordColor here
+          dynamicColorStyle = { color: completedWordColor };
           opacityClass = "opacity-100";
         } else if (index === currentWordIdx) { // Current word
           fontSizeClass = "text-8xl";
-          // Colors for the current word are handled character by character below,
-          // so no default full-word color class or style is applied here.
           opacityClass = "opacity-100";
         } else if (index === currentWordIdx + 1) { // Next word
           fontSizeClass = "text-7xl";
@@ -69,7 +66,7 @@ export const WordDisplay: React.FC<WordDisplayProps> = ({
           opacityClass = "opacity-50";
         } else { // Far away words: hide visually but maintain layout space for measurement
           opacityClass = "opacity-0 invisible";
-          tailwindTextColorClass = "text-white"; // Default for hidden words, though not visible
+          tailwindTextColorClass = "text-white";
         }
 
         // Render current word character-by-character for individual highlighting
